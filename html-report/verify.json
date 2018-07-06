@@ -1,0 +1,35 @@
+{
+  "dependencyScopes": [
+    "runtime",
+    "compile"
+  ],
+  "dependencies": [
+    {
+      "groupId": "org.slf4j",
+      "artifactId": "slf4j-api",
+      "comments": [],
+      "dependencyScope": [
+        "compile",
+        "runtime"
+      ],
+      "licenses": [],
+      "originsInProjects": [
+        "testproject"
+      ]
+    },
+    {
+      "groupId": "org.slf4j",
+      "artifactId": "slf4j-core",
+      "comments": [],
+      "dependencyScope": [
+        "compile"
+      ],
+      "licenses": [],
+      "originsInProjects": [
+        "testproject",
+        "testproject2"
+      ]
+    }
+  ],
+  "creationDate": "Jun 29, 2018 10:31:09 AM"
+}
