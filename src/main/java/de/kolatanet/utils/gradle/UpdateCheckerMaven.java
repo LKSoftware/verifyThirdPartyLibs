@@ -32,9 +32,7 @@ public class UpdateCheckerMaven implements Function<Library, Library> {
 
   @Override
   public Library apply(Library library) {
-    System.out.println("checking " + library.toString());
     String latest = getLatestVersion(library);
-    System.out.println("checking " + library.toString() + "\n latest " + latest);
     if (!library.getVersion().equals(latest)) {
       library.addComment("Latest version " + latest + " is not used!");
     }
