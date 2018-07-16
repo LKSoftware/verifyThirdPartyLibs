@@ -2,7 +2,6 @@ package de.kolatanet.utils.gradle;
 
 import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.utils.FileLocator;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,26 +21,21 @@ import java.util.stream.Collectors;
  *
  * @author Leon Kolata
  */
-public class UpdateChecker implements Function<Library, Library>
-{
+public class UpdateChecker implements Function<Library, Library> {
 
   private static final Pattern REGEX_UPDATE = Pattern.compile(
-    " - ([\\w.-]+:[\\w.-]+) \\[(\\d[\\w.-]+) -> (\\d+[\\w.-]*)\\]+");
+      " - ([\\w.-]+:[\\w.-]+) \\[(\\d[\\w.-]+) -> (\\d+[\\w.-]*)\\]+");
 
   private final Map<String, String> dependencies = new HashMap<>();
 
   /**
    * Reads all report files and parses them into a Map to check against.
    */
-  public UpdateChecker(Path dir)
-  {
-    try
-    {
+  public UpdateChecker(Path dir) {
+    try {
       readReports(dir);
 
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
 
     }
   }
@@ -49,20 +43,18 @@ public class UpdateChecker implements Function<Library, Library>
   /**
    * Searches for all reports and parses them into a Map.
    */
-  private void readReports(Path dir) throws IOException
-  {
+  private void readReports(Path dir) throws IOException {
     List<Path> depUpdates = FileLocator.getInstance()
-                                       .locate(dir, "txt", "report")
-                                       .stream()
-                                       .filter(path -> path.getParent()
-                                                           .getFileName()
-                                                           .toString()
-                                                           .equals("dependencyUpdates"))
-                                       .collect(Collectors.toList());
+        .locate(dir, "txt", "report")
+        .stream()
+        .filter(path -> path.getParent()
+            .getFileName()
+            .toString()
+            .equals("dependencyUpdates"))
+        .collect(Collectors.toList());
 
     List<String> lines = new ArrayList<>();
-    for ( Path path : depUpdates )
-    {
+    for (Path path : depUpdates) {
       lines.addAll(Files.readAllLines(path));
     }
 
@@ -75,12 +67,10 @@ public class UpdateChecker implements Function<Library, Library>
    *
    * @param line report line
    */
-  private void parseReportLine(String line)
-  {
+  private void parseReportLine(String line) {
     final Matcher matcher = REGEX_UPDATE.matcher(line);
 
-    if (matcher.matches())
-    {
+    if (matcher.matches()) {
       dependencies.put(matcher.group(1), matcher.group(2));
     }
   }
@@ -89,13 +79,11 @@ public class UpdateChecker implements Function<Library, Library>
    * Checks whether a {@link Library} is updatable.
    */
   @Override
-  public Library apply(Library library)
-  {
+  public Library apply(Library library) {
 
     String dependency = library.getGroupId() + ":" + library.getArtifactId();
 
-    if (dependencies.containsKey(dependency))
-    {
+    if (dependencies.containsKey(dependency)) {
       library.addComment("Latest version " + dependencies.get(dependency) + " is not used!");
     }
 

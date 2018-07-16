@@ -9,16 +9,14 @@ import java.util.Optional;
  *
  * @author Leon Kolata
  */
-public class LibraryList extends ArrayList<Library>
-{
+public class LibraryList extends ArrayList<Library> {
 
   private static final long serialVersionUID = -656423073232622830L;
 
   /**
    * Call constructor on {@link ArrayList}
    */
-  public LibraryList()
-  {
+  public LibraryList() {
     super();
   }
 
@@ -28,11 +26,9 @@ public class LibraryList extends ArrayList<Library>
    * @return true if dependency added.
    */
   @Override
-  public boolean add(Library dependency)
-  {
+  public boolean add(Library dependency) {
     Optional<Library> found = stream().filter(dep -> dep.equals(dependency)).findAny();
-    if (found.isPresent())
-    {
+    if (found.isPresent()) {
       found.get().getOriginsInProjects().addAll(dependency.getOriginsInProjects());
       found.get().getDependencyScope().addAll(dependency.getDependencyScope());
       return false;

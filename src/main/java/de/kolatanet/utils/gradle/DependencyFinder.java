@@ -2,11 +2,10 @@ package de.kolatanet.utils.gradle;
 
 import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.basemodel.LibraryList;
-import org.gradle.api.Project;
-import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import org.gradle.api.Project;
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
 
 /**
@@ -14,48 +13,39 @@ import java.util.Collection;
  *
  * @author Leon Kolata
  */
-public class DependencyFinder
-{
+public class DependencyFinder {
 
   private final LibraryList DEPENDENCY_LIST = new LibraryList();
 
   private final Collection<String> DEPENDENCY_SCOPE = new ArrayList<>();
 
-  public DependencyFinder(Collection<String> dependencyScope)
-  {
+  public DependencyFinder(Collection<String> dependencyScope) {
     DEPENDENCY_SCOPE.addAll(dependencyScope);
   }
 
-  public LibraryList findDependencies(Project project)
-  {
+  public LibraryList findDependencies(Project project) {
 
     project.getAllprojects().stream().forEach(this::find);
 
     return DEPENDENCY_LIST;
   }
 
-  private void find(Project project)
-  {
+  private void find(Project project) {
 
-    for ( String scope : DEPENDENCY_SCOPE )
-    {
-      try
-      {
-        if (!project.getConfigurations().isEmpty())
-        {
+    for (String scope : DEPENDENCY_SCOPE) {
+      try {
+        if (!project.getConfigurations().isEmpty()) {
           project.getConfigurations()
-                 .getByName(scope)
-                 .getAllDependencies()
-                 .stream()
-                 .filter(dep -> dep instanceof DefaultExternalModuleDependency)
-                 .forEach(dep -> DEPENDENCY_LIST.add(new Library(dep.getGroup(),
-                                                                 dep.getName(),
-                                                                 dep.getVersion()).addOriginInProject(project.getName())
-                                                                                  .addDependencyScope(scope)));
+              .getByName(scope)
+              .getAllDependencies()
+              .stream()
+              .filter(dep -> dep instanceof DefaultExternalModuleDependency)
+              .forEach(dep -> DEPENDENCY_LIST.add(new Library(dep.getGroup(),
+                  dep.getName(),
+                  dep.getVersion()).addOriginInProject(project.getName())
+                  .addDependencyScope(scope)));
         }
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
 
       }
     }
