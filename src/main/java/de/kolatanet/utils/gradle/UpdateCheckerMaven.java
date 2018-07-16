@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class UpdateCheckerMaven implements Function<Library, Library> {
 
-  private String MAVEN_BASE_URL = "http://search.maven.org/solrsearch/select?q=g:%22{groupId}%22+AND+a:%22{artifactId}%22&core=gav&rows=20&wt=json";
+  private static final String MAVEN_BASE_URL = "http://search.maven.org/solrsearch/select?q=g:%22{groupId}%22+AND+a:%22{artifactId}%22&core=gav&rows=20&wt=json";
 
   private static final String URL_GROUP = "{groupId}";
 
