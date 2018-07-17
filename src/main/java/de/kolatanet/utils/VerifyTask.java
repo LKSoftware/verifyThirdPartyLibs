@@ -2,7 +2,7 @@ package de.kolatanet.utils;
 
 import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.gradle.DependencyFinder;
-import de.kolatanet.utils.gradle.UpdateCheckerMaven;
+import de.kolatanet.utils.gradle.UpdateCheckerMavenCentral;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
@@ -15,11 +15,19 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
-
+/**
+ * Gradle Plugin Task for verifying dependencies.
+ *
+ * @author Leon Kolata
+ */
 public class VerifyTask extends DefaultTask {
 
   private final Project currentProject;
 
+  /**
+   * Dependency scope
+   * Input in config block as String scopes seperated by ','.
+   */
   @Input
   public String scope;
 
@@ -28,16 +36,20 @@ public class VerifyTask extends DefaultTask {
   @Input
   public int proxyPort;
 
+  /**
+   * Keeps track of currentProject incase of multiproject.
+   */
   public VerifyTask() {
     currentProject = getProject();
   }
-
+  
   @TaskAction
   void runVerify() {
     System.out.println("Verify ThirdPartyLibs");
     DependencyFinder dep = new DependencyFinder(getDependencyScope());
-    UpdateCheckerMaven uc =
-        getProxy() != null ? new UpdateCheckerMaven(getProxy()) : new UpdateCheckerMaven();
+    UpdateCheckerMavenCentral uc =
+        getProxy() != null ? new UpdateCheckerMavenCentral(getProxy())
+            : new UpdateCheckerMavenCentral();
 
     Collection<Library> result = dep.findDependencies(currentProject)
         .stream()

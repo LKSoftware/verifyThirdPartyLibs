@@ -19,10 +19,18 @@ public class DependencyFinder {
 
   private final Collection<String> DEPENDENCY_SCOPE = new ArrayList<>();
 
+  /**
+   * Creates DependencyFinder and adds the given scope list.
+   */
   public DependencyFinder(Collection<String> dependencyScope) {
     DEPENDENCY_SCOPE.addAll(dependencyScope);
   }
 
+  /**
+   * Asks gradle api about dependencies and returns a LibraryList.
+   * @param project
+   * @return
+   */
   public LibraryList findDependencies(Project project) {
 
     project.getAllprojects().stream().forEach(this::find);
@@ -30,6 +38,10 @@ public class DependencyFinder {
     return DEPENDENCY_LIST;
   }
 
+  /**
+   * Find all dependencies in a gradle project with defined configurations.
+   * @param project
+   */
   private void find(Project project) {
 
     for (String scope : DEPENDENCY_SCOPE) {
