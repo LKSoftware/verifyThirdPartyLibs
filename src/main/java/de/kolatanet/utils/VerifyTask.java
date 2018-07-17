@@ -42,7 +42,7 @@ public class VerifyTask extends DefaultTask {
   public VerifyTask() {
     currentProject = getProject();
   }
-  
+
   @TaskAction
   void runVerify() {
     System.out.println("Verify ThirdPartyLibs");
