@@ -150,9 +150,7 @@ public class Library implements Serializable {
    * Returns a string formatted as dependency "groupId:artifactId:version"
    */
   public String asDependency() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(groupId).append(':').append(artifactId).append(':').append(version);
-    return sb.toString();
+    return groupId + ':' + artifactId + ':' + version;
   }
 
   /**

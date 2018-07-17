@@ -1,0 +1,10 @@
+{
+  "libraries": [
+    {
+      "dependency": "de.example:example",
+      "version": "1.1",
+      "reason": "It may break the magic",
+      "creator": "the Dev"
+    }
+  ]
+}

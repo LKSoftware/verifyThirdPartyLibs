@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.gradle.api.Project;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
+import org.gradle.internal.impldep.com.esotericsoftware.minlog.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -14,6 +17,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
  * @author Leon Kolata
  */
 public class DependencyFinder {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DependencyFinder.class);
 
   private final LibraryList DEPENDENCY_LIST = new LibraryList();
 
@@ -28,19 +33,16 @@ public class DependencyFinder {
 
   /**
    * Asks gradle api about dependencies and returns a LibraryList.
-   * @param project
-   * @return
    */
   public LibraryList findDependencies(Project project) {
 
-    project.getAllprojects().stream().forEach(this::find);
+    project.getAllprojects().forEach(this::find);
 
     return DEPENDENCY_LIST;
   }
 
   /**
    * Find all dependencies in a gradle project with defined configurations.
-   * @param project
    */
   private void find(Project project) {
 
@@ -58,7 +60,7 @@ public class DependencyFinder {
                   .addDependencyScope(scope)));
         }
       } catch (Exception e) {
-
+        Log.warn("Could not find configuration for scope: " + scope);
       }
     }
 

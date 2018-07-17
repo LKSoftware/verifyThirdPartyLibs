@@ -22,13 +22,11 @@ public class TestLibrary {
 
     Library systemUnderTest = new Library("test", "test", "1.0", empty, empty);
 
-    Library sameObject = systemUnderTest;
-
     Library same = new Library("test", "test", "1.0", empty, empty);
 
     Library notSame = new Library("testing", "testing", "2.0", empty, empty);
 
-    Assert.assertTrue("equality object test", systemUnderTest.equals(sameObject));
+    Assert.assertTrue("equality object test", systemUnderTest.equals(systemUnderTest));
     Assert.assertTrue("equality test", systemUnderTest.equals(same));
     Assert.assertFalse("not equal test", systemUnderTest.equals(notSame));
   }
