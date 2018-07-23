@@ -1,4 +1,4 @@
-package de.kolatanet.utils.gradle;
+package de.kolatanet.utils.maven;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

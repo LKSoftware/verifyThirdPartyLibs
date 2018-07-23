@@ -2,13 +2,18 @@ package de.kolatanet.utils;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * VerifyPlugin entry Point Applys and adds the rule to run after evaluation
  */
 public class VerifyPlugin implements Plugin<Project> {
 
+  private static final Logger LOG = LoggerFactory.getLogger(VerifyPlugin.class);
+
   private static final String TASK_NAME_VERIFY = "verify";
+
   private VerifyTask verifyTask;
 
   /**
@@ -30,7 +35,7 @@ public class VerifyPlugin implements Plugin<Project> {
     try {
       project.getTasks().getByName("check").dependsOn(verifyTask);
     } catch (Exception e) {
-      System.out.println("Error: applying the verifyThirdPartyLibs plugin requires Java-Plugin");
+      LOG.error("Applying the verifyThirdPartyLibs plugin requires Java-Plugin");
     }
   }
 

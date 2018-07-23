@@ -16,6 +16,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.json:json:20180130'
     implementation 'commons-io:commons-io:2.5'
+    implementation 'org.jsoup:jsoup:1.11.3'
 }
 
 //PLUGIN CONFIG

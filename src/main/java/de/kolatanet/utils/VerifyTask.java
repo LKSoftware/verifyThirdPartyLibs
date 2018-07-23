@@ -2,7 +2,7 @@ package de.kolatanet.utils;
 
 import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.gradle.DependencyFinder;
-import de.kolatanet.utils.gradle.UpdateCheckerMavenCentral;
+import de.kolatanet.utils.maven.UpdateCheckerMavenCentral;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
@@ -14,6 +14,8 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Gradle Plugin Task for verifying dependencies.
@@ -22,11 +24,12 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class VerifyTask extends DefaultTask {
 
+  private static final Logger LOG = LoggerFactory.getLogger(VerifyTask.class);
+
   private final Project currentProject;
 
   /**
-   * Dependency scope
-   * Input in config block as String scopes seperated by ','.
+   * Dependency scope Input in config block as String scopes seperated by ','.
    */
   @Input
   public String scope;
@@ -45,7 +48,7 @@ public class VerifyTask extends DefaultTask {
 
   @TaskAction
   void runVerify() {
-    System.out.println("Verify ThirdPartyLibs");
+    LOG.warn("Verify ThirdPartyLibs");
     DependencyFinder dep = new DependencyFinder(getDependencyScope());
     UpdateCheckerMavenCentral uc =
         getProxy() != null ? new UpdateCheckerMavenCentral(getProxy())
@@ -63,7 +66,7 @@ public class VerifyTask extends DefaultTask {
           currentProject.getName());
 
       Path path = reporter.createReport(getDependencyScope(), result);
-      System.out.println("Created verify report: " + path);
+      LOG.trace("Created verify report: " + path);
 
     } catch (Exception e) {
       e.printStackTrace();

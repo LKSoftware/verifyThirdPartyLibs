@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  *
  * @author Leon Kolata
  */
+@Deprecated
 public class UpdateChecker implements Function<Library, Library> {
 
   private static final Pattern REGEX_UPDATE = Pattern.compile(
