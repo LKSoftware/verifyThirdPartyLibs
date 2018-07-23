@@ -132,6 +132,9 @@ public class Library implements Serializable {
    * Returns the version.
    */
   public String getVersion() {
+    if (version == null) {
+      return "undefined";
+    }
     return version;
   }
 
@@ -142,6 +145,9 @@ public class Library implements Serializable {
     return originsInProjects;
   }
 
+  /**
+   * Returns the dependencyScope
+   */
   public Collection<String> getDependencyScope() {
     return dependencyScope;
   }

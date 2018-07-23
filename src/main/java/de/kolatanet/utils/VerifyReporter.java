@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 /**
@@ -22,25 +23,19 @@ public class VerifyReporter {
 
   /**
    * Creates a outputdir and the file to write to.
-   * @param outputDir
-   * @param project
-   * @throws IOException
    */
-  public VerifyReporter(Path outputDir, String project) throws IOException {
-    if (!Files.exists(outputDir)) {
-      outputDir.toFile().mkdir();
+  public VerifyReporter(String outputDir, String project) throws IOException {
+    Path out = Paths.get(outputDir);
+    if (!Files.exists(out)) {
+      out.toFile().mkdir();
     }
-    outputFile = outputDir.resolve(project + FILE_NAME).toFile();
+    outputFile = out.resolve(project + FILE_NAME).toFile();
     outputFile.createNewFile();
 
   }
 
   /**
    * Fills the report with data.
-   * @param dependencyScope
-   * @param dependencies
-   * @return
-   * @throws IOException
    */
   public Path createReport(Collection<String> dependencyScope, Collection<Library> dependencies)
       throws IOException {

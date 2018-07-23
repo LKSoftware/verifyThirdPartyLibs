@@ -4,9 +4,11 @@ import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.basemodel.LibraryList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
-import org.gradle.internal.impldep.com.esotericsoftware.minlog.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +36,7 @@ public class DependencyFinder {
   /**
    * Asks gradle api about dependencies and returns a LibraryList.
    */
+
   public LibraryList findDependencies(Project project) {
 
     project.getAllprojects().forEach(this::find);
@@ -54,15 +57,35 @@ public class DependencyFinder {
               .getAllDependencies()
               .stream()
               .filter(dep -> dep instanceof DefaultExternalModuleDependency)
-              .forEach(dep -> DEPENDENCY_LIST.add(new Library(dep.getGroup(),
-                  dep.getName(),
-                  dep.getVersion()).addOriginInProject(project.getName())
-                  .addDependencyScope(scope)));
+              .forEach(dep -> addLibrary(dep, project, scope));
         }
       } catch (Exception e) {
-        Log.warn("Could not find configuration for scope: " + scope);
+        LOG.warn("Could not find configuration for scope: " + scope);
       }
     }
 
+  }
+
+  private void addLibrary(Dependency dependency, Project project, String scope) {
+    String version = dependency.getVersion();
+    if (version != null && version.equals("null") || version == null) {
+      Optional<ResolvedDependency> found =
+          project.getConfigurations().getByName(scope)
+              .getResolvedConfiguration()
+              .getFirstLevelModuleDependencies().stream()
+              .filter(dep -> dep.getModuleGroup().equals(dependency.getGroup())
+                  && dep.getModuleName().equals(dependency.getName())).findFirst();
+
+      addResolvedVersion(dependency, project, scope,
+          found.map(ResolvedDependency::getModuleVersion).orElse("undefined"));
+      return;
+    }
+    addResolvedVersion(dependency, project, scope, version);
+  }
+
+  private void addResolvedVersion(Dependency dep, Project project, String scope, String version) {
+    DEPENDENCY_LIST
+        .add(new Library(dep.getGroup(), dep.getName(), version)
+            .addOriginInProject(project.getName()).addDependencyScope(scope));
   }
 }

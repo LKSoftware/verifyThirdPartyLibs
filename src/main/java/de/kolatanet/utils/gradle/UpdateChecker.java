@@ -79,6 +79,7 @@ public class UpdateChecker implements Function<Library, Library> {
   /**
    * Checks whether a {@link Library} is updatable.
    */
+
   @Override
   public Library apply(Library library) {
 

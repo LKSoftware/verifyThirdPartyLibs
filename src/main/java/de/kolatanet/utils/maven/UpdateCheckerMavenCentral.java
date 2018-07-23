@@ -32,13 +32,6 @@ public class UpdateCheckerMavenCentral implements Function<Library, Library> {
   private final Proxy proxy;
 
   /**
-   * Creates UpdateChecker
-   */
-  public UpdateCheckerMavenCentral() {
-    this.proxy = null;
-  }
-
-  /**
    * Creates UpdateChecker with Proxy
    */
   public UpdateCheckerMavenCentral(Proxy proxy) {
@@ -76,26 +69,36 @@ public class UpdateCheckerMavenCentral implements Function<Library, Library> {
   private JsonElement requestJson(String url) throws IOException {
     URL mavenUrl = new URL(url);
 
-    URLConnection con = proxy == null ? mavenUrl.openConnection() : mavenUrl.openConnection(proxy);
+    URLConnection con = mavenUrl.openConnection(proxy);
 
     try (InputStreamReader isr = new InputStreamReader(con.getInputStream())) {
       return new JsonParser().parse(isr);
+    } catch (Exception e) {
+      LOG.trace("Failed while parsing maven central json: " + e);
     }
+    return null;
   }
 
   /**
    * Requests the json from maven and extract the version.
    */
   private String retrieveMavenReport(Library lib, String url) throws IOException {
-    JsonObject root = requestJson(url).getAsJsonObject();
-    JsonObject response = root.getAsJsonObject("response");
-    JsonArray docs = response.getAsJsonArray("docs");
-    JsonObject first = docs.get(0).getAsJsonObject();
+    JsonElement rootElement = requestJson(url);
+    if (rootElement != null) {
+      JsonObject root = rootElement.getAsJsonObject();
+      JsonObject response = root.getAsJsonObject("response");
+      JsonArray docs = response.getAsJsonArray("docs");
+      if (docs.size() >= 1) {
+        JsonObject first = docs.get(0).getAsJsonObject();
 
-    if (first.get("g").getAsString().equals(lib.getGroupId()) && first.get("a").getAsString()
-        .equals(lib.getArtifactId())) {
-      return first.get("v").getAsString();
+        if (first.get("g").getAsString().equals(lib.getGroupId()) && first.get("a").getAsString()
+            .equals(lib.getArtifactId())) {
+          return first.get("v").getAsString();
+        }
+      } else {
+        LOG.warn("Could not find updates for: " + lib.asDependency());
+      }
     }
-    return null;
+    return lib.getVersion();
   }
 }

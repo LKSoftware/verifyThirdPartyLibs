@@ -6,11 +6,12 @@ import de.kolatanet.utils.basemodel.LibraryExclusionJson;
 import de.kolatanet.utils.basemodel.LibraryExclusionJson.Exclusion;
 import de.kolatanet.utils.utils.FileLocator;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
+import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
-import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class LibraryExclusion implements Predicate<Library> {
           .locate(project.getRootDir().toPath(), "json", "LibraryExclusions");
 
       if (!file.isEmpty()) {
-        String json = FileUtils.readFileToString(file.get(0).toFile());
+        String json = FileUtils.readFileToString(file.get(0).toFile(), StandardCharsets.UTF_8);
         libraryExclusionJson = new Gson().fromJson(json, LibraryExclusionJson.class);
       }
     } catch (IOException e) {
@@ -37,7 +38,7 @@ public class LibraryExclusion implements Predicate<Library> {
     }
   }
 
-  public Exclusion getExclusion(Library library) {
+  private Exclusion getExclusion(Library library) {
     return libraryExclusionJson.getLibraries().stream()
         .filter(exclusion -> exclusion.getDependency()
             .equals(library.getGroupId() + ":" + library.getArtifactId()))

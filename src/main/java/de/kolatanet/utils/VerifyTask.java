@@ -2,6 +2,7 @@ package de.kolatanet.utils;
 
 import de.kolatanet.utils.basemodel.Library;
 import de.kolatanet.utils.gradle.DependencyFinder;
+import de.kolatanet.utils.maven.LicenseChecker;
 import de.kolatanet.utils.maven.UpdateCheckerMavenCentral;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -9,6 +10,7 @@ import java.net.Proxy.Type;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
@@ -48,41 +50,44 @@ public class VerifyTask extends DefaultTask {
 
   @TaskAction
   void runVerify() {
-    LOG.warn("Verify ThirdPartyLibs");
+    LOG.warn("Verify Dependencies");
     DependencyFinder dep = new DependencyFinder(getDependencyScope());
-    UpdateCheckerMavenCentral uc =
-        getProxy() != null ? new UpdateCheckerMavenCentral(getProxy())
-            : new UpdateCheckerMavenCentral();
+    UpdateCheckerMavenCentral uc = new UpdateCheckerMavenCentral(getProxy());
+
+    LicenseChecker lc = new LicenseChecker(getProxy());
 
     Collection<Library> result = dep.findDependencies(currentProject)
         .stream()
+        .map(lc)
         .map(uc)
         .collect(Collectors.toList());
 
     try {
-      VerifyReporter reporter = new VerifyReporter(currentProject.getBuildDir()
-          .toPath()
-          .resolve("verifyThirdPartyLibs"),
+      VerifyReporter reporter = new VerifyReporter(
+          currentProject.getBuildDir().getAbsolutePath() + "/verifyGradleDependencies",
           currentProject.getName());
 
       Path path = reporter.createReport(getDependencyScope(), result);
-      LOG.trace("Created verify report: " + path);
+      LOG.warn("Created verify report: " + path);
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.error("Failed while creating verify report: ", e);
     }
 
   }
 
   private Collection<String> getDependencyScope() {
-    return Arrays.asList(scope.trim().split(","));
+    if (scope != null) {
+      return Arrays.asList(scope.trim().split(","));
+    }
+    return Collections.emptyList();
   }
 
   private Proxy getProxy() {
     if (proxyHost != null && proxyPort != 0) {
       return new Proxy(Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
     }
-    return null;
+    return Proxy.NO_PROXY;
   }
 
 }
