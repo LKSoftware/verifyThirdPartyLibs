@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class LibraryExclusion implements Predicate<Library> {
+public class LibraryExclusion implements Function<Library, Library> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LibraryExclusion.class);
 
@@ -46,7 +46,11 @@ public class LibraryExclusion implements Predicate<Library> {
   }
 
   @Override
-  public boolean test(Library library) {
-    return getExclusion(library) != null;
+  public Library apply(Library library) {
+    Exclusion exclusion = getExclusion(library);
+    if (exclusion != null) {
+      library.addComment(exclusion.getReason() + " creator: " + exclusion.getCreator());
+    }
+    return library;
   }
 }

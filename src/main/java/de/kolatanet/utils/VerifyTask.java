@@ -1,6 +1,7 @@
 package de.kolatanet.utils;
 
 import de.kolatanet.utils.basemodel.Library;
+import de.kolatanet.utils.filter.GroupIdFilter;
 import de.kolatanet.utils.gradle.DependencyFinder;
 import de.kolatanet.utils.maven.LicenseChecker;
 import de.kolatanet.utils.maven.UpdateCheckerMavenCentral;
@@ -8,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,12 +36,15 @@ public class VerifyTask extends DefaultTask {
    * Dependency scope Input in config block as String scopes seperated by ','.
    */
   @Input
-  public String scope;
+  private String scope;
+  @Input
+  private String proxyHost;
+  @Input
+  private int proxyPort;
 
   @Input
-  public String proxyHost;
-  @Input
-  public int proxyPort;
+  private String groupIdsToIgnore;
+
 
   /**
    * Keeps track of currentProject incase of multiproject.
@@ -52,14 +57,16 @@ public class VerifyTask extends DefaultTask {
   void runVerify() {
     LOG.warn("Verify Dependencies");
     DependencyFinder dep = new DependencyFinder(getDependencyScope());
+    GroupIdFilter groupFilter = new GroupIdFilter(getGroupIdsToIgnore());
     UpdateCheckerMavenCentral uc = new UpdateCheckerMavenCentral(getProxy());
 
     LicenseChecker lc = new LicenseChecker(getProxy());
 
     Collection<Library> result = dep.findDependencies(currentProject)
         .stream()
-        .map(lc)
+        .filter(groupFilter.negate())
         .map(uc)
+        .map(lc)
         .collect(Collectors.toList());
 
     try {
@@ -75,6 +82,14 @@ public class VerifyTask extends DefaultTask {
     }
 
   }
+
+  private Collection<String> getGroupIdsToIgnore() {
+    if (groupIdsToIgnore == null) {
+      return Collections.emptyList();
+    }
+    return new ArrayList<>(Arrays.asList(groupIdsToIgnore.trim().split(",")));
+  }
+
 
   private Collection<String> getDependencyScope() {
     if (scope != null) {

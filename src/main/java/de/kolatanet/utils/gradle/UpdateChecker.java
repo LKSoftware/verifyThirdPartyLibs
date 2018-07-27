@@ -60,7 +60,6 @@ public class UpdateChecker implements Function<Library, Library> {
     }
 
     lines.forEach(this::parseReportLine);
-
   }
 
   /**
@@ -88,7 +87,6 @@ public class UpdateChecker implements Function<Library, Library> {
     if (dependencies.containsKey(dependency)) {
       library.addComment("Latest version " + dependencies.get(dependency) + " is not used!");
     }
-
     return library;
   }
 }

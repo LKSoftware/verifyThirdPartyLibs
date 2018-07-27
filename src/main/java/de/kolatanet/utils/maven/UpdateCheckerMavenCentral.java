@@ -53,7 +53,7 @@ public class UpdateCheckerMavenCentral implements Function<Library, Library> {
   /**
    * Calls maven central and gets a json report for the dependency.
    */
-  public String getLatestVersion(Library lib) {
+  private String getLatestVersion(Library lib) {
     try {
       return retrieveMavenReport(lib, MAVEN_BASE_URL.replace(URL_GROUP, lib.getGroupId())
           .replace(URL_ARTIFACT, lib.getArtifactId()));
