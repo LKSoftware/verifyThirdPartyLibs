@@ -15,7 +15,7 @@ import java.util.Collection;
  *
  * @author Leon Kolata
  */
-public class VerifyReporter {
+class VerifyReporter {
 
   private static final String FILE_NAME = "-report.json";
 
@@ -24,8 +24,8 @@ public class VerifyReporter {
   /**
    * Creates a outputdir and the file to write to.
    */
-  public VerifyReporter(String outputDir, String project) throws IOException {
-    Path out = Paths.get(outputDir);
+  VerifyReporter(String outputDir, String project) throws IOException {
+    Path out = Paths.get(outputDir).resolve("verifyGradleDependencies");
     if (!Files.exists(out)) {
       out.toFile().mkdir();
     }

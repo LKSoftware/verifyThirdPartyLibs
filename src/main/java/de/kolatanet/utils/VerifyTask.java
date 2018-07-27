@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Leon Kolata
  */
-public class VerifyTask extends DefaultTask {
+class VerifyTask extends DefaultTask {
 
   private static final Logger LOG = LoggerFactory.getLogger(VerifyTask.class);
 
@@ -71,7 +71,7 @@ public class VerifyTask extends DefaultTask {
 
     try {
       VerifyReporter reporter = new VerifyReporter(
-          currentProject.getBuildDir().getAbsolutePath() + "/verifyGradleDependencies",
+          currentProject.getBuildDir().getAbsolutePath(),
           currentProject.getName());
 
       Path path = reporter.createReport(getDependencyScope(), result);

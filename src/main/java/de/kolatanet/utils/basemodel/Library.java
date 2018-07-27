@@ -173,13 +173,9 @@ public class Library implements Serializable {
 
     Library that = (Library) o;
 
-    if (groupId != null ? !groupId.equals(that.groupId) : that.groupId != null) {
-      return false;
-    }
-    if (artifactId != null ? !artifactId.equals(that.artifactId) : that.artifactId != null) {
-      return false;
-    }
-    return version != null ? version.equals(that.version) : that.version == null;
+    return (groupId != null ? groupId.equals(that.groupId) : that.groupId == null) && (
+        artifactId != null ? artifactId.equals(that.artifactId) : that.artifactId == null) && (
+        version != null ? version.equals(that.version) : that.version == null);
   }
 
   /**

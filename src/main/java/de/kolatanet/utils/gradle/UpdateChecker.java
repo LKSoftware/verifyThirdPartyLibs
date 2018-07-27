@@ -35,9 +35,8 @@ public class UpdateChecker implements Function<Library, Library> {
   public UpdateChecker(Path dir) {
     try {
       readReports(dir);
-
     } catch (IOException e) {
-
+      //no
     }
   }
 

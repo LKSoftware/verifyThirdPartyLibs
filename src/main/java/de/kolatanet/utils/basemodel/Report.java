@@ -9,11 +9,14 @@ import java.util.Date;
  * Report contaning all the dependencies as Library object. Object will be converted to json when
  * toString is called.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class Report {
 
   //Containing all configurations
+  @SuppressWarnings("FieldCanBeLocal")
   private final Collection<String> dependencyScopes;
 
+  @SuppressWarnings("FieldCanBeLocal")
   private final Collection<Library> dependencies;
 
   //Date of report creation
