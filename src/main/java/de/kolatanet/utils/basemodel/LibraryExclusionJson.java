@@ -5,13 +5,17 @@ import java.util.List;
 
 public class LibraryExclusionJson {
 
-  List<Exclusion> libraries = new ArrayList<>();
+  final List<Exclusion> libraries = new ArrayList<>();
 
   public List<Exclusion> getLibraries() {
     return libraries;
   }
 
-  public class Exclusion {
+  /**
+   * Try to make inner classes always static!
+   * TODO: consider using lombok
+   */
+  public static class Exclusion {
 
     String dependency;
 

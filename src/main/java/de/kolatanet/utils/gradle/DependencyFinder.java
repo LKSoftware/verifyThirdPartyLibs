@@ -68,7 +68,7 @@ public class DependencyFinder {
 
   private void addLibrary(Dependency dependency, Project project, String scope) {
     String version = dependency.getVersion();
-    if (version != null && version.equals("null") || version == null) {
+    if (version == null || version.equals("null")) {
       Optional<ResolvedDependency> found =
           project.getConfigurations().getByName(scope)
               .getResolvedConfiguration()
