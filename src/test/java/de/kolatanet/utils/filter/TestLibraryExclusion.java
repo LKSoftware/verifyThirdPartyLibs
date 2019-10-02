@@ -1,5 +1,7 @@
 package de.kolatanet.utils.filter;
 
+import static org.hamcrest.Matchers.notNullValue;
+
 import de.kolatanet.utils.basemodel.Library;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,10 @@ import org.junit.Test;
 
 public class TestLibraryExclusion {
 
+  /**
+   * TODO: With each test, first describe what that test checks. A non-documented test is not useful at all.
+   * @throws IOException
+   */
   @Test
   public void testExclusion() throws IOException {
     Project testProject = ProjectBuilder.builder().withName("testProject").build();
@@ -27,7 +33,8 @@ public class TestLibraryExclusion {
 
     LibraryExclusion systemUnderTest = new LibraryExclusion(testProject);
 
-    Assert.assertTrue(systemUnderTest.test(new Library("de.example", "example", "1.0")));
+    // TODO: check whatever behaviour this test should assert!
+    Assert.assertThat(systemUnderTest.apply(new Library("de.example", "example", "1.0")), notNullValue());
   }
 
 }

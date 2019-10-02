@@ -5,8 +5,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import javafx.util.Pair;
-
+import java.util.Objects;
 
 /**
  * Represents a library model containing all necessary info about the library and it's origin.
@@ -27,7 +26,7 @@ public class Library implements Serializable {
 
   private final Collection<String> dependencyScope = new HashSet<>();
 
-  private Pair<Path, String> file;
+  private Path file;
 
   private Collection<String> licenses = new HashSet<>();
 
@@ -102,7 +101,7 @@ public class Library implements Serializable {
    * Sets the representing file of the library if present.
    */
   public Library setFile(Path file) {
-    this.file = new Pair<>(file, file.getFileName().toString());
+    this.file = file;
     return this;
   }
 
@@ -173,9 +172,9 @@ public class Library implements Serializable {
 
     Library that = (Library) o;
 
-    return (groupId != null ? groupId.equals(that.groupId) : that.groupId == null) && (
-        artifactId != null ? artifactId.equals(that.artifactId) : that.artifactId == null) && (
-        version != null ? version.equals(that.version) : that.version == null);
+    return Objects.equals(groupId,that.groupId) &&
+        Objects.equals(artifactId, that.artifactId) &&
+        Objects.equals(version, that.version);
   }
 
   /**
@@ -196,7 +195,7 @@ public class Library implements Serializable {
   public String toString() {
     return "Library{" + "groupId='" + groupId + '\'' + ", artifactId='" + artifactId + '\''
         + ", version='"
-        + version + '\'' + ", file=" + file + ", licenses=" + licenses + ", comments=" + comments
+        + version + '\'' + ", file=" + file +  ", licenses=" + licenses + ", comments=" + comments
         + ", originsInProjects=" + originsInProjects + '}';
   }
 }
